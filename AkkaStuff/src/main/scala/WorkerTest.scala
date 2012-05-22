@@ -1,5 +1,3 @@
-package test
-
 import akka.actor._
 import akka.actor.Actor._
 
@@ -85,14 +83,14 @@ class Worker extends Actor {
         Thread.sleep(myNumber)
 
         val rolled = (scala.math.random * 20).toLong
-        //if (rolled > 7) {
+        if (rolled > 18) {
           // fail instead of succeed
           //workSupervisor ! WorkFailed(self)
-        //  self.tryReply(WorkFailed(self, "Failure chance happened; rolled " + rolled))
-        //} else {
+          self.tryReply(WorkFailed(self, "Failure chance happened; rolled " + rolled))
+        } else {
           workCollector tryTell WorkUnit(self.uuid + ": produced " + myNumber)
           self.tryReply(WorkDone(self))
-        //}
+        }
         self.stop()
       }
     }
