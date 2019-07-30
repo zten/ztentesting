@@ -1,17 +1,25 @@
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 public class Concurrency {
     public static void main(String[] args) {
         ExecutorService exec = Executors.newFixedThreadPool(4);
 
-        CompletableFuture<String> first = CompletableFuture.supplyAsync(getStringSupplier("string 1"), exec);
-        CompletableFuture<String> second = CompletableFuture.supplyAsync(getStringSupplier("string 2"), exec);
-        CompletableFuture<String> third = CompletableFuture.supplyAsync(getStringSupplier("string 3"), exec);
+        CompletableFuture<String> first = CompletableFuture.supplyAsync(
+                getStringSupplier("string 1"), exec);
+        CompletableFuture<String> second = CompletableFuture.supplyAsync(
+                getStringSupplier("string 2"), exec);
+        CompletableFuture<String> third = CompletableFuture.supplyAsync(
+                getStringSupplier("string 3"), exec);
 
-        CompletableFuture<Void> res = CompletableFuture.allOf(first, second, third).thenAccept((empty) -> {
-            System.out.println("woohoo! we're done!");
-        });
+        CompletableFuture<Void> res = CompletableFuture
+                .allOf(first, second, third)
+                .thenAccept((empty) -> {
+                    System.out.println("woohoo! we're done!");
+                });
 
         res.join();
 
@@ -47,6 +55,8 @@ public class Concurrency {
     }
 
     private static CompletableFuture<String> delayedTransform(String input) {
-        return CompletableFuture.completedFuture("fixed: " + input).thenApply((str) -> "really fixed: " + str);
+        return CompletableFuture
+                .completedFuture("fixed: " + input)
+                .thenApply((str) -> "really fixed: " + str);
     }
 }
