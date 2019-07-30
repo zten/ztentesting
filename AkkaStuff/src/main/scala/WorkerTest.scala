@@ -37,7 +37,7 @@ object WorkerTest extends App {
 
   supervisor.start()
 
-  val work = supervisor ? StartWorkers(10)
+  val work = supervisor ? StartWorkers(1000)
 
   work map {
     f => f match {
@@ -83,14 +83,14 @@ class Worker extends Actor {
         Thread.sleep(myNumber)
 
         val rolled = (scala.math.random * 20).toLong
-        if (rolled > 18) {
+        //if (rolled > 18) {
           // fail instead of succeed
           //workSupervisor ! WorkFailed(self)
-          self.tryReply(WorkFailed(self, "Failure chance happened; rolled " + rolled))
-        } else {
-          workCollector tryTell WorkUnit(self.uuid + ": produced " + myNumber)
+        //  self.tryReply(WorkFailed(self, "Failure chance happened; rolled " + rolled))
+        //} else {
+        //  workCollector tryTell WorkUnit(self.uuid + ": produced " + myNumber)
           self.tryReply(WorkDone(self))
-        }
+        //}
         self.stop()
       }
     }
